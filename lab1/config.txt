@@ -1,3 +1,0 @@
-/home/akira1707/Desktop/lab1/testdir txt
-/tmp logs
-interval 20
