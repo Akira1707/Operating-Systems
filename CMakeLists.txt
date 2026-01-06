@@ -1,0 +1,28 @@
+cmake_minimum_required(VERSION 3.10)
+project(wolf_goat)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
+
+file(GLOB IPC_SOURCES "conn_*.cpp")
+
+foreach(src ${IPC_SOURCES})
+    get_filename_component(name ${src} NAME_WE)
+
+    if(name MATCHES "conn_mq")
+        add_executable(host_${name} host.cpp ${src})
+        target_compile_definitions(host_${name} PRIVATE USE_MQ)
+        add_executable(client_${name} client.cpp ${src})
+        target_compile_definitions(client_${name} PRIVATE USE_MQ)
+    elseif(name MATCHES "conn_fifo")
+        add_executable(host_${name} host.cpp ${src})
+        target_compile_definitions(host_${name} PRIVATE USE_FIFO)
+        add_executable(client_${name} client.cpp ${src})
+        target_compile_definitions(client_${name} PRIVATE USE_FIFO)
+    elseif(name MATCHES "conn_sock")
+        add_executable(host_${name} host.cpp ${src})
+        target_compile_definitions(host_${name} PRIVATE USE_SOCK)
+        add_executable(client_${name} client.cpp ${src})
+        target_compile_definitions(client_${name} PRIVATE USE_SOCK)
+    endif()
+endforeach()
